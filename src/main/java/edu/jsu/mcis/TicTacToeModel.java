@@ -74,8 +74,16 @@ public class TicTacToeModel {
         board = new Mark[width][width];
 
         /* Initialize board by filling every square with empty marks */
+
+        for(int i = 0; i < width; i++) { 
+        	
+			for(int j = 0; j < width; j++) {
+        		
+				board[i][j] = Mark.EMPTY;
+        	
+			}
         
-        // INSERT YOUR CODE HERE
+		}
         
     }
 	
@@ -87,41 +95,85 @@ public class TicTacToeModel {
            toggle "xTurn" from true to false (or vice-versa) to switch to the
            other player before returning TRUE.  Otherwise, return FALSE. */
         
-        // INSERT YOUR CODE HERE
-        
-        return false; // remove this line later!
-        
-    }
+    	try{
+    		
+			if(((isValidSquare(row, col))) && (!isSquareMarked(row, col))){
+    			
+				if(xTurn){
+    				
+					board[row][col]= Mark.X;
+					
+					xTurn = !xTurn;
+				
+				}
+				
+				else{
+					
+					board[row][col] = Mark.O;
+					
+					xTurn = !xTurn;
+				
+				}
+			
+			return true;
+			
+			}
+		
+		}catch(Exception e){}		
+
+        return false;
+    
+	}
 	
     private boolean isValidSquare(int row, int col) {
         
         /* Return TRUE if the specified location is within the bounds of the board */
-        
-        // INSERT YOUR CODE HERE
 
-        return false; // remove this line later!
+        if(row >= 0 && row < width) {
+            
+			if (col >= 0 && col < width) {
+                
+				return true;
+            
+			}
         
-    }
+		}
+        
+		return false; 
+    
+	}
 	
     private boolean isSquareMarked(int row, int col) {
         
         /* Return TRUE if the square at specified location is marked */
-        
-        // INSERT YOUR CODE HERE
 
-        return false; // remove this line later!
+        if (isValidSquare(row,col) == true) {
             
-    }
+			if (board[row][col] != Mark.EMPTY) {
+                
+				return true;
+            
+			}
+        
+		}
+        
+		return false;
+    
+	}
 	
     public Mark getMark(int row, int col) {
         
         /* Return the mark from the square at the specified location */
-        
-        // INSERT YOUR CODE HERE
 
-        return null; // remove this line later!
+        if (isValidSquare(row,col) == true) {
             
-    }
+			return board[row][col];
+        
+		}
+        
+		return null;
+    
+	}
 	
     public Result getResult() {
         
@@ -129,9 +181,29 @@ public class TicTacToeModel {
            TIE, or if the game is not over.  Return the corresponding Result
            value */
         
-        // INSERT YOUR CODE HERE
+        if ( isMarkWin(Mark.X) ) {
+            
+			return Result.X;
+        
+		}
 
-        return null; // remove this line later!
+        if (isMarkWin(Mark.O)) {
+            
+			return Result.O;
+        
+		}
+
+        if (isTie()) {
+            
+			return Result.TIE;
+        
+		}
+
+        else {
+            
+			return Result.NONE;
+        
+		}
         
     }
 	
@@ -139,22 +211,133 @@ public class TicTacToeModel {
         
         /* Check the squares of the board to see if the specified mark is the
            winner */
+
+        int counter = 0;
+
+        //columns
+
+        for (int row = 0; row < width; ++row) {
+            
+			for (int col = 0; col < width; ++col) {
+                
+				if (getMark(row,col) == mark) {
+                    
+					++counter;
+                
+				}
+                
+				if (counter == width) {
+                    
+					return true;
+                
+				}
+            
+			}
+            
+			counter = 0;
         
-        // INSERT YOUR CODE HERE
+		}
 
-        return false; // remove this line later!
+        //rows
 
-    }
+        for (int col = 0; col < width; ++col) {
+            
+			for (int row = 0; row < width; ++row) {
+                
+				if (getMark(row,col) == mark) {
+                    
+					++counter;
+                
+				}
+                
+				if (counter == width) {
+                    
+					return true;
+                
+				}
+            
+			}
+            
+			counter = 0;
+        
+		}
+
+        //diagonal, left to right
+
+        for (int row = 0; row < width; ++row) {
+            
+			if (getMark(row,row) == mark) {
+                
+				++counter;
+            
+			}
+            
+			if (counter == width){
+                
+				return true;
+            
+			}
+        
+		}
+        
+		counter = 0;
+        
+
+        //diagonal right to left
+
+        for (int row = 0; row < width; ++row) {
+            
+			if (getMark(row,width - 1 - row) == mark) {
+                
+				++counter;
+            
+			}
+            
+			if (counter == width) {
+                
+				return true;
+            
+			}
+        
+		}
+        
+		counter = 0;
+
+        return false;
+    
+	}
 	
     private boolean isTie() {
         
         /* Check the squares of the board to see if the game is a tie */
-        
-        // INSERT YOUR CODE HERE
 
-        return false; // remove this line later!
+        for (int row = 0; row < board.length; ++row) {
+            
+			for (int col = 0; col < board.length; ++col) {
+
+                if (getMark(row,col) == Mark.EMPTY) {
+                
+					return false;
+                
+				}
+            
+			}
         
-    }
+		}
+
+        if (isMarkWin(Mark.X) || isMarkWin(Mark.O)) {
+            
+			return false;
+        
+		}
+
+        else {
+            
+			return true;
+        
+		}
+    
+	}
 
     public boolean isGameover() {
         
@@ -187,10 +370,22 @@ public class TicTacToeModel {
         
         /* Output the board contents as a string (see examples) */
         
-        // INSERT YOUR CODE HERE
+		output.append("012\n");
+
+        for (int row = 0; row < width; ++row) {
+
+            output.append(row + " ");
+
+            for (int col = 0; col < width; ++col) {
+                
+				output.append(board[row][col]);
         
-        return output.toString();
+            }
+            output.append("\n");
+        }
         
-    }
+		return output.toString();
     
+	}
+
 }
